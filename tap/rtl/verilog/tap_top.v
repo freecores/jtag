@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/12/23 14:52:14  mohor
+// Directory structure changed. New version of TAP.
+//
 // Revision 1.10  2003/10/23 18:08:01  mohor
 // MBIST chain connection fixed.
 //
@@ -155,7 +158,7 @@ reg     exit2_dr;
 reg     update_dr;
 reg     select_ir_scan;
 reg     capture_ir;
-reg     shift_ir;
+reg     shift_ir, shift_ir_neg;
 reg     exit1_ir;
 reg     pause_ir;
 reg     exit2_ir;
@@ -394,7 +397,7 @@ end
 *                                                                                 *
 **********************************************************************************/
 reg [`IR_LENGTH-1:0]  jtag_ir;          // Instruction register
-reg [`IR_LENGTH-1:0]  latched_jtag_ir;
+reg [`IR_LENGTH-1:0]  latched_jtag_ir, latched_jtag_ir_neg;
 reg                   instruction_tdo;
 
 always @ (posedge tck_pad_i or posedge trst_pad_i)
@@ -556,16 +559,15 @@ end
 *   Multiplexing TDO data                                                         *
 *                                                                                 *
 **********************************************************************************/
-
-always @ (shift_ir or exit1_ir or instruction_tdo or latched_jtag_ir or idcode_tdo or
+always @ (shift_ir_neg or exit1_ir or instruction_tdo or latched_jtag_ir_neg or idcode_tdo or
           debug_tdi_i or bs_chain_tdi_i or mbist_tdi_i or 
           bypassed_tdo)
 begin
-  if(shift_ir)
+  if(shift_ir_neg)
     tdo_pad_o <=#1 instruction_tdo;
   else
     begin
-      case(latched_jtag_ir)    // synthesis parallel_case
+      case(latched_jtag_ir_neg)    // synthesis parallel_case
         `IDCODE:            tdo_pad_o = idcode_tdo;       // Reading ID code
         `DEBUG:             tdo_pad_o = debug_tdi_i;      // Debug
         `SAMPLE_PRELOAD:    tdo_pad_o = bs_chain_tdi_i;   // Sampling/Preloading
@@ -589,6 +591,11 @@ end
 **********************************************************************************/
 
 
+always @ (negedge tck_pad_i)
+begin
+  shift_ir_neg <= #1 shift_ir;
+  latched_jtag_ir_neg <= #1 latched_jtag_ir;
+end
 
 
 endmodule
