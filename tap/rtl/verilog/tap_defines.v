@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2004/01/27 10:00:33  mohor
+// Unused registers removed.
+//
 // Revision 1.1  2003/12/23 14:52:14  mohor
 // Directory structure changed. New version of TAP.
 //
@@ -51,7 +54,11 @@
 
 
 // Define IDCODE Value
-`define IDCODE_VALUE  32'h14951185
+`define IDCODE_VALUE  32'h149511c3
+// 0001             version
+// 0100100101010001 part number (IQ)
+// 00011100001      manufacturer id (flextronics)
+// 1                required by standard
 
 // Length of the Instruction register
 `define	IR_LENGTH	4
