@@ -482,7 +482,8 @@ assign BidirectionalBuffered[1:0] = BidirectionalPin[1:0];								// Inputs of b
 //IBUF buffer0 (.I(BidirectionalPin[0]), .O(BidirectionalBuffered[0]));
 //IBUF buffer1 (.I(BidirectionalPin[1]), .O(BidirectionalBuffered[1]));
 
-wire ExtTestEnabled = (JTAG_IR==EXTEST) | (JTAG_IR==SAMPLE_PRELOAD);
+//wire ExtTestEnabled = (JTAG_IR==EXTEST) | (JTAG_IR==SAMPLE_PRELOAD);
+wire ExtTestEnabled = (JTAG_IR==EXTEST);
 
 
 // BOUNDARY SCAN REGISTER
