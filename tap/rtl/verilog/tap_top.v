@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2004/01/18 09:27:39  simons
+// Blocking non blocking assignmenst fixed.
+//
 // Revision 1.4  2004/01/17 17:37:44  mohor
 // capture_dr_o added to ports.
 //
@@ -478,37 +481,6 @@ end
 *                                                                                 *
 **********************************************************************************/
 
-
-/**********************************************************************************
-*                                                                                 *
-*   jtag_dr:  JTAG Data Register                                                  *
-*                                                                                 *
-**********************************************************************************/
-reg [`DR_LENGTH-1:0]  jtag_dr;          // Data register
-reg [`DR_LENGTH-1:0]  latched_jtag_dr;
-reg                   data_tdo;
-
-always @ (posedge tck_pad_i or posedge trst_pad_i)
-begin
-  if(trst_pad_i)
-    jtag_dr[`DR_LENGTH-1:0] <= #1 `DR_LENGTH'b0;
-  else
-  if(capture_dr)
-    jtag_dr <= #1 4'b0101;          // This value is fixed for easier fault detection
-  else
-  if(shift_dr)
-    jtag_dr[`DR_LENGTH-1:0] <= #1 {tdi_pad_i, jtag_dr[`DR_LENGTH-1:1]};
-end
-
-always @ (negedge tck_pad_i)
-begin
-  data_tdo <= #1 jtag_dr[0];
-end
-/**********************************************************************************
-*                                                                                 *
-*   End: jtag_dr                                                                  *
-*                                                                                 *
-**********************************************************************************/
 
 
 /**********************************************************************************

@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/12/23 14:52:14  mohor
+// Directory structure changed. New version of TAP.
+//
 //
 //
 
@@ -52,9 +55,6 @@
 
 // Length of the Instruction register
 `define	IR_LENGTH	4
-
-// Length of the Data register
-`define	DR_LENGTH	4
 
 // Supported Instructions
 `define EXTEST          4'b0000
