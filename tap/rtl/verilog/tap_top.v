@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2004/01/17 17:37:44  mohor
+// capture_dr_o added to ports.
+//
 // Revision 1.3  2004/01/14 13:50:56  mohor
 // 5 consecutive TMS=1 causes reset of TAP.
 //
@@ -618,7 +621,7 @@ always @ (shift_ir_neg or exit1_ir or instruction_tdo or latched_jtag_ir_neg or 
           bypassed_tdo)
 begin
   if(shift_ir_neg)
-    tdo_pad_o <=#1 instruction_tdo;
+    tdo_pad_o = instruction_tdo;
   else
     begin
       case(latched_jtag_ir_neg)    // synthesis parallel_case
