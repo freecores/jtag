@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2004/01/14 13:50:56  mohor
+// 5 consecutive TMS=1 causes reset of TAP.
+//
 // Revision 1.2  2004/01/08 10:29:44  mohor
 // Control signals for tdo_pad_o mux are changed to negedge.
 //
@@ -105,6 +108,7 @@ module tap_top(
                 shift_dr_o,
                 pause_dr_o, 
                 update_dr_o,
+                capture_dr_o,
                 
                 // Select signals for boundary scan or mbist
                 extest_select_o, 
@@ -134,6 +138,7 @@ output  tdo_padoe_o;    // Output enable for JTAG test data output pad
 output  shift_dr_o;
 output  pause_dr_o;
 output  update_dr_o;
+output  capture_dr_o;
 
 // Select signals for boundary scan or mbist
 output  extest_select_o;
@@ -181,6 +186,7 @@ assign tdo_o = tdi_pad_i;
 assign shift_dr_o = shift_dr;
 assign pause_dr_o = pause_dr;
 assign update_dr_o = update_dr;
+assign capture_dr_o = capture_dr;
 
 assign extest_select_o = extest_select;
 assign sample_preload_select_o = sample_preload_select;
