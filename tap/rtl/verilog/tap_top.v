@@ -43,6 +43,9 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2004/01/08 10:29:44  mohor
+// Control signals for tdo_pad_o mux are changed to negedge.
+//
 // Revision 1.1  2003/12/23 14:52:14  mohor
 // Directory structure changed. New version of TAP.
 //
@@ -171,7 +174,8 @@ reg     debug_select;
 reg     bypass_select;
 reg     tdo_pad_o;
 reg     tdo_padoe_o;
-
+reg     tms_q1, tms_q2, tms_q3, tms_q4;
+wire    tms_reset;
 
 assign tdo_o = tdi_pad_i;
 assign shift_dr_o = shift_dr;
@@ -183,6 +187,19 @@ assign sample_preload_select_o = sample_preload_select;
 assign mbist_select_o = mbist_select;
 assign debug_select_o = debug_select;
 
+
+always @ (posedge tck_pad_i)
+begin
+  tms_q1 <= #1 tms_pad_i;
+  tms_q2 <= #1 tms_q1;
+  tms_q3 <= #1 tms_q2;
+  tms_q4 <= #1 tms_q3;
+end
+
+
+assign tms_reset = tms_q1 & tms_q2 & tms_q3 & tms_q4 & tms_pad_i;    // 5 consecutive TMS=1 causes reset
+
+
 /**********************************************************************************
 *                                                                                 *
 *   TAP State Machine: Fully JTAG compliant                                       *
@@ -193,6 +210,8 @@ assign debug_select_o = debug_select;
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    test_logic_reset<=#1 1'b1;
+  else if (tms_reset)
     test_logic_reset<=#1 1'b1;
   else
     begin
@@ -208,6 +227,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     run_test_idle<=#1 1'b0;
+  else if (tms_reset)
+    run_test_idle<=#1 1'b0;
   else
   if(~tms_pad_i & (test_logic_reset | run_test_idle | update_dr | update_ir))
     run_test_idle<=#1 1'b1;
@@ -219,6 +240,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    select_dr_scan<=#1 1'b0;
+  else if (tms_reset)
     select_dr_scan<=#1 1'b0;
   else
   if(tms_pad_i & (run_test_idle | update_dr | update_ir))
@@ -232,6 +255,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     capture_dr<=#1 1'b0;
+  else if (tms_reset)
+    capture_dr<=#1 1'b0;
   else
   if(~tms_pad_i & select_dr_scan)
     capture_dr<=#1 1'b1;
@@ -243,6 +268,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    shift_dr<=#1 1'b0;
+  else if (tms_reset)
     shift_dr<=#1 1'b0;
   else
   if(~tms_pad_i & (capture_dr | shift_dr | exit2_dr))
@@ -256,6 +283,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     exit1_dr<=#1 1'b0;
+  else if (tms_reset)
+    exit1_dr<=#1 1'b0;
   else
   if(tms_pad_i & (capture_dr | shift_dr))
     exit1_dr<=#1 1'b1;
@@ -267,6 +296,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    pause_dr<=#1 1'b0;
+  else if (tms_reset)
     pause_dr<=#1 1'b0;
   else
   if(~tms_pad_i & (exit1_dr | pause_dr))
@@ -280,6 +311,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     exit2_dr<=#1 1'b0;
+  else if (tms_reset)
+    exit2_dr<=#1 1'b0;
   else
   if(tms_pad_i & pause_dr)
     exit2_dr<=#1 1'b1;
@@ -291,6 +324,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    update_dr<=#1 1'b0;
+  else if (tms_reset)
     update_dr<=#1 1'b0;
   else
   if(tms_pad_i & (exit1_dr | exit2_dr))
@@ -304,6 +339,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     select_ir_scan<=#1 1'b0;
+  else if (tms_reset)
+    select_ir_scan<=#1 1'b0;
   else
   if(tms_pad_i & select_dr_scan)
     select_ir_scan<=#1 1'b1;
@@ -315,6 +352,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    capture_ir<=#1 1'b0;
+  else if (tms_reset)
     capture_ir<=#1 1'b0;
   else
   if(~tms_pad_i & select_ir_scan)
@@ -328,6 +367,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     shift_ir<=#1 1'b0;
+  else if (tms_reset)
+    shift_ir<=#1 1'b0;
   else
   if(~tms_pad_i & (capture_ir | shift_ir | exit2_ir))
     shift_ir<=#1 1'b1;
@@ -339,6 +380,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    exit1_ir<=#1 1'b0;
+  else if (tms_reset)
     exit1_ir<=#1 1'b0;
   else
   if(tms_pad_i & (capture_ir | shift_ir))
@@ -352,6 +395,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     pause_ir<=#1 1'b0;
+  else if (tms_reset)
+    pause_ir<=#1 1'b0;
   else
   if(~tms_pad_i & (exit1_ir | pause_ir))
     pause_ir<=#1 1'b1;
@@ -364,6 +409,8 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     exit2_ir<=#1 1'b0;
+  else if (tms_reset)
+    exit2_ir<=#1 1'b0;
   else
   if(tms_pad_i & pause_ir)
     exit2_ir<=#1 1'b1;
@@ -375,6 +422,8 @@ end
 always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
+    update_ir<=#1 1'b0;
+  else if (tms_reset)
     update_ir<=#1 1'b0;
   else
   if(tms_pad_i & (exit1_ir | exit2_ir))
@@ -404,11 +453,9 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     jtag_ir[`IR_LENGTH-1:0] <= #1 `IR_LENGTH'b0;
-  else
-  if(capture_ir)
+  else if(capture_ir)
     jtag_ir <= #1 4'b0101;          // This value is fixed for easier fault detection
-  else
-  if(shift_ir)
+  else if(shift_ir)
     jtag_ir[`IR_LENGTH-1:0] <= #1 {tdi_pad_i, jtag_ir[`IR_LENGTH-1:1]};
 end
 
@@ -519,8 +566,9 @@ always @ (posedge tck_pad_i or posedge trst_pad_i)
 begin
   if(trst_pad_i)
     latched_jtag_ir <=#1 `IDCODE;   // IDCODE selected after reset
-  else
-  if(update_ir)
+  else if (tms_reset)
+    latched_jtag_ir <=#1 `IDCODE;   // IDCODE selected after reset
+  else if(update_ir)
     latched_jtag_ir <=#1 jtag_ir;
 end
 
