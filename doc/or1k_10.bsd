@@ -40,6 +40,9 @@
 -- CVS Revision History
 --
 -- $Log: not supported by cvs2svn $
+-- Revision 1.1  2001/08/01 18:49:42  mohor
+-- Reset signal changed. Bsdl file added to the project.
+--
 --
 --
 --
