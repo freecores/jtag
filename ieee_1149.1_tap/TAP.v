@@ -108,9 +108,9 @@ begin
 end
 
 // RunTestIdle state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		RunTestIdle<=0;
 	else
 		begin
@@ -122,9 +122,9 @@ begin
 end
 
 // SelectDRScan state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		SelectDRScan<=0;
 	else
 		begin
@@ -136,9 +136,9 @@ begin
 end
 
 // CaptureDR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		CaptureDR<=0;
 	else
 		begin
@@ -150,9 +150,9 @@ begin
 end
 
 // ShiftDR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		ShiftDR<=0;
 	else
 		begin
@@ -164,9 +164,9 @@ begin
 end
 
 // Exit1DR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		Exit1DR<=0;
 	else
 		begin
@@ -178,9 +178,9 @@ begin
 end
 
 // PauseDR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		PauseDR<=0;
 	else
 		begin
@@ -192,9 +192,9 @@ begin
 end
 
 // Exit2DR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		Exit2DR<=0;
 	else
 		begin
@@ -206,9 +206,9 @@ begin
 end
 
 // UpdateDR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		UpdateDR<=0;
 	else
 		begin
@@ -220,9 +220,9 @@ begin
 end
 
 // SelectIRScan state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		SelectIRScan<=0;
 	else
 		begin
@@ -234,9 +234,9 @@ begin
 end
 
 // CaptureIR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		CaptureIR<=0;
 	else
 		begin
@@ -248,9 +248,9 @@ begin
 end
 
 // ShiftIR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		ShiftIR<=0;
 	else
 		begin
@@ -262,9 +262,9 @@ begin
 end
 
 // Exit1IR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		Exit1IR<=0;
 	else
 		begin
@@ -276,9 +276,9 @@ begin
 end
 
 // PauseIR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		PauseIR<=0;
 	else
 		begin
@@ -290,9 +290,9 @@ begin
 end
 
 // Exit2IR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		Exit2IR<=0;
 	else
 		begin
@@ -304,9 +304,9 @@ begin
 end
 
 // UpdateIR state
-always @ (posedge TCK or posedge TRST)
+always @ (posedge TCK or posedge RESET)
 begin
-	if(TRST)
+	if(RESET)
 		UpdateIR<=0;
 	else
 		begin

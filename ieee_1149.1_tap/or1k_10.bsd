@@ -1,0 +1,136 @@
+--////////////////////////////////////////////////////////////////////
+--//                                                              ////
+--//  or1k_10.bsd                                                 ////
+--//                                                              ////
+--//  This file is part of the IEEE 1149.1 Test Access Port (TAP) ////
+--//  IP core project                                             ////
+--//  http://www.opencores.org/cores/jtag/                        ////
+--//                                                              ////
+--//  Author(s):                                                  ////
+--//      - Igor Mohor (igorM@opencores.org)                      ////
+--//                                                              ////
+--//                                                              ////
+--////////////////////////////////////////////////////////////////////
+--//                                                              ////
+--// Copyright (C) 2000, 2001 Authors                             ////
+--//                                                              ////
+--// This source file may be used and distributed without         ////
+--// restriction provided that this copyright statement is not    ////
+--// removed from the file and that any derivative work contains  ////
+--// the original copyright notice and the associated disclaimer. ////
+--//                                                              ////
+--// This source file is free software; you can redistribute it   ////
+--// and/or modify it under the terms of the GNU Lesser General   ////
+--// Public License as published by the Free Software Foundation; ////
+--// either version 2.1 of the License, or (at your option) any   ////
+--// later version.                                               ////
+--//                                                              ////
+--// This source is distributed in the hope that it will be       ////
+--// useful, but WITHOUT ANY WARRANTY; without even the implied   ////
+--// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      ////
+--// PURPOSE.  See the GNU Lesser General Public License for more ////
+--// details.                                                     ////
+--//                                                              ////
+--// You should have received a copy of the GNU Lesser General    ////
+--// Public License along with this source; if not, download it   ////
+--// from http://www.opencores.org/lgpl.shtml                     ////
+--//                                                              ////
+--////////////////////////////////////////////////////////////////////
+--
+-- CVS Revision History
+--
+-- $Log: not supported by cvs2svn $
+--
+--
+--
+--
+
+-- 
+--  BSDL File created/edited by Igor Mohor  (igorm@opencores.org)
+-- 
+--Package: ??
+entity or1k_10 is
+
+generic (PHYSICAL_PIN_MAP : string := "vq44" );
+
+port ( 
+	MyInput0: in bit; 
+	MyInput1: in bit; 
+	MyOutput0: out bit; 
+	MyOutput1: out bit; 
+	MyBidirectional0: inout bit; 
+	MyBidirectional1: inout bit; 
+	TCK: in bit; 
+	TDI: in bit; 
+	TDO: out bit; 
+	TMS: in bit
+	);
+
+use STD_1149_1_1994.all;
+
+attribute COMPONENT_CONFORMANCE of or1k_10 : entity is "STD_1149_1_1993";  
+attribute PIN_MAP of or1k_10 : entity is PHYSICAL_PIN_MAP;
+
+constant vq44: PIN_MAP_STRING:=
+	"TCK:1," & 
+	"TDI:2," & 
+	"TDO:3," & 
+	"TMS:4," &
+	"MyInput0:5," & 
+	"MyInput1:6," & 
+	"MyOutput0:7," & 
+	"MyOutput1:8," & 
+	"MyBidirectional0:9," & 
+	"MyBidirectional1:10";
+
+attribute TAP_SCAN_IN    of TDI : signal is true;
+attribute TAP_SCAN_OUT   of TDO : signal is true;
+attribute TAP_SCAN_MODE  of TMS : signal is true;
+attribute TAP_SCAN_CLOCK of TCK : signal is (1.00e+06, BOTH);	-- 
+attribute INSTRUCTION_LENGTH of or1k_10 : entity is 4;
+
+attribute INSTRUCTION_OPCODE of or1k_10 : entity is		-- 
+	"EXTEST ( 0000)," &
+	"SAMPLE ( 0001)," &
+	"IDCODE ( 0010)," &
+	"BYPASS ( 1111)";
+
+attribute INSTRUCTION_CAPTURE of or1k_10: entity is "1001";
+
+attribute IDCODE_REGISTER of or1k_10: entity is	-- 
+        "1100" &               -- version
+        "0011110000111100" &    -- part number
+        "00111100001" &         -- manufacturer's id
+        "1";                    -- required by standard
+
+--attribute USERCODE_REGISTER of or1k_10: entity is
+--        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
+
+-- attribute INSTRUCTION_DISABLE of or1k_10 : entity is "HIGHZ"; 
+
+attribute REGISTER_ACCESS of or1k_10 : entity is
+        "BYPASS (BYPASS)," &
+				"DEVICE_ID (IDCODE)," &
+				"BOUNDARY (SAMPLE,EXTEST)";
+
+attribute BOUNDARY_LENGTH of or1k_10 : entity is 12;
+--attribute BOUNDARY_LENGTH of or1k_10 : entity is 6;
+
+attribute BOUNDARY_REGISTER of or1k_10 : entity is
+-- num      cell   port                  function        safe  [ccell disval   rslt]
+   "0     ( BC_1,  MyInput0             ,input   ,        X),   " &
+   "1     ( BC_1,  MyInput1             ,input   ,        X),   " &
+   "2     ( BC_1,  MyOutput0            ,output3 ,        0,     3,     0,      Z),   " &
+   "3     ( BC_1,  *                    ,controlr,        1),   " &
+   "4     ( BC_1,  MyOutput1            ,output3 ,        0,     5,     0,      Z),   " &
+   "5     ( BC_1,  *                    ,controlr,        1),   " &
+   "6     ( BC_1,  MyBidirectional0     ,input   ,        X),   " &
+   "7     ( BC_1,  MyBidirectional0     ,output3 ,        0,     8,     0,      Z),   " &
+   "8     ( BC_1,  *                    ,controlr,        1),   " &
+   "9     ( BC_1,  MyBidirectional1     ,input   ,        X),   " &
+   "10    ( BC_1,  MyBidirectional1     ,output3 ,        0,     11,    0,      Z),   " &
+   "11    ( BC_1,  *                    ,controlr,        1)   " ;
+end or1k_10;
+
+end or1k_10;
